@@ -1,7 +1,7 @@
-
 /******************************************************************
  *
  *   YOUR NAME / SECTION NUMBER
+ * Ethan Grassia / Section 001
  *
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
@@ -9,8 +9,11 @@
  *
  ********************************************************************/
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 public class ProblemSolutions {
 
@@ -63,14 +66,22 @@ public class ProblemSolutions {
      * returning the 0 if queue is empty else return pq.peek().
      */
 
-  public static int lastBoulder(int[] boulders) {
+    public static int lastBoulder(int[] boulders) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        for (int boulder : boulders) {
+            pq.add(boulder);
+        }
 
-      //
-      // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
-      //
-      return -1;
-  }
+        while (pq.size() > 1) {
+            int y = pq.poll(); // the heaviest
+            int x = pq.poll(); // the second heaviest
+            if (x != y) {
+                pq.add(y - x);
+            }
+        }
 
+        return pq.isEmpty() ? 0 : pq.peek();
+    }
 
     /**
      * Method showDuplicates
@@ -90,21 +101,26 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> showDuplicates(ArrayList<String> input) {
+        Set<String> allItems = new HashSet<>();
+        Set<String> duplicates = new HashSet<>();
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
+        for (String item : input) {
+            if (!allItems.add(item)) {
+                duplicates.add(item);
+            }
+        }
 
+        ArrayList<String> result = new ArrayList<>(duplicates);
+        Collections.sort(result);
+        return result;
     }
-
 
     /**
      * Finds pairs in the input array that add up to k.
      *
      * @param input   Array of integers
      * @param k       The sum to find pairs for
-
+     *
      * @return an ArrayList<String> containing a list of strings. The ArrayList
      *        of strings needs to be ordered both within a pair, and
      *        between pairs in ascending order. E.g.,
@@ -116,7 +132,7 @@ public class ProblemSolutions {
      *         - Ordering between pairs:
      *            The ordering of strings of pairs should be sorted in lowest to
      *            highest pairs. E.g., if the following two string pairs within
-     *            the returned ArraryList, "(3, 6)" and "(2, 7), they should be
+     *            the returned ArrayList, "(3, 6)" and "(2, 7), they should be
      *            ordered in the ArrayList returned as "(2, 7)" and "(3, 6 )".
      *
      *         Example output:
@@ -130,10 +146,21 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> pair(int[] input, int k) {
+        Set<Integer> seen = new HashSet<>();
+        Set<String> pairs = new HashSet<>();
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+        for (int num : input) {
+            int complement = k - num;
+            if (seen.contains(complement)) {
+                int a = Math.min(num, complement);
+                int b = Math.max(num, complement);
+                pairs.add("(" + a + ", " + b + ")");
+            }
+            seen.add(num);
+        }
+
+        ArrayList<String> result = new ArrayList<>(pairs);
+        Collections.sort(result);
+        return result;
     }
 }
